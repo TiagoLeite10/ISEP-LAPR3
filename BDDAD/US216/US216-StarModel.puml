@@ -1,0 +1,81 @@
+@startuml
+!define pk(x) <b><color:#daa520><&key></color> x</b>
+!define fk(x) <color:#aaaaaa><&key></color> x
+!define pk_fk(x) <color:#967444><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (t, white) >>
+title <b>Star Model</b>
+hide methods
+hide circle
+skinparam title {
+    HorizontalAlignment top
+    FontSize 24
+}
+
+'------Tabelas----------
+
+table(LEGENDA) {
+    pk(PK)
+    fk(FK)
+    pk_fk(PK_FK)
+    column(TEXT)
+}
+
+table(produto) {
+    pk(codProduto)
+    column(nome)
+    column(tipoCultura)
+    column(cultura)
+}
+
+table(cliente) {
+    pk(codCliente)
+    column(numeroFiscal)
+}
+
+table(venda) {
+      pk_fk(codCliente)
+      pk_fk(codProduto)
+      pk_fk(codTempo)
+      pk_fk(codHub)
+      column(vendasLiquidas)
+      column(quantidade)
+}
+
+table(colheita) {
+     pk_fk(codParcela)
+     pk_fk(codProduto)
+     pk_fk(codTempo)
+     column(quantidade)
+}
+
+table(parcela) {
+     pk(codParcela)
+     column(designacao)
+     column(area)
+}
+
+table(tempo) {
+     pk(codTempo)
+     column(ano)
+     column(mes)
+}
+
+table(hub) {
+    pk(codHub)
+    column(hub)
+    column(tipoHub)
+}
+
+'------Relações----------
+colheita }|.down.|| tempo
+venda }|.down.|| tempo
+venda }|.up.|| produto
+colheita }|.up.|| produto
+
+venda }|.left.|| cliente
+colheita }|.right.|| parcela
+
+hub ||.down.|{ venda
+
+@enduml

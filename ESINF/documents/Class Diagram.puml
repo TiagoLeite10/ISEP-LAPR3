@@ -1,0 +1,237 @@
+@startuml
+    package model {
+        class NetworkPoint {
+            -localizationId : String
+            -latitude : Double
+            -longitude : Double
+            -nearestHub : CompanyCostumer
+            +NetworkPoint(localizationId : String, latitude : Double, longitude : Double)
+            +NetworkPoint(localizationId : String)
+            +defineNearestHub(nearestHub : CompanyCostumer)
+            +defineNearestHub() : CompanyCostumer
+            +equals(obj : Object) : boolean
+            +hashCode() : int
+        }
+
+        class AgriculturalProducer {
+            -producerCode : String
+            -agriculturalProducerStatistics : AgriculturalProducerStatistics
+            +AgriculturalProducer(localizationId : String, latitude : Double, longitude : Double, producerCode : String)
+            -checkProducerCode(producerCode : String)
+        }
+
+        class CompanyCostumer {
+            -hub : boolean
+            -hubStatistics : HubStatistics
+            +CompanyCostumer(localizationId : String, latitude : Double, longitude : Double, companyCode : String)
+            -checkCompanyCode(companyCode : String)
+            +setHub(hub : boolean)
+            +isHub() : boolean
+        }
+
+        class ParticularCostumer {
+            +ParticularCostumer(localizationId : String, latitude : Double, longitude : Double, particularCode : String)
+            -checkParticularCode(particularCode : String)
+        }
+
+        class DistributionNetwork {
+            -distributionNetwork : Graph<NetworkPoint, Integer>
+            -minDistDistributionNetwork : MatrixGraph<NetworkPoint, Integer>
+            -productsAvailable : Map<Integer, Map<AgriculturalProducer, Basket>>
+            -productsRequest : Map<Integer, Map<Costumer, Basket>>
+            +DistributionNetwork()
+            +getDistributionNetwork() : Graph<NetworkPoint, Integer>
+            +buildDistributionNetwork(filePathVertex : String, filePathEdge : String)
+            +fileToVertex(filePathVertex : String)
+            +fileToEdge(filePathEdge : String)
+            +fileToBasket(filePathBasket : String)
+            +getProductsAvailable() : Map<Integer, Map<AgriculturalProducer, Basket>>
+            +getProductsRequest() : Map<Integer, Map<Costumer, Basket>>
+            +minimumSpanningTree() : Graph<NetworkPoint, Integer>
+            +checkConnectivity() : boolean
+            +minimumNumberNetwork() : int
+            +calculateMinimumNumberNetwork() : int
+            -averageProximity(vOrig : NetworkPoint, paths : ArrayList<LinkedList<NetworkPoint>>, dists : ArrayList<Integer>) : Pair<CompanyCostumer, Integer>
+            +defineHubs(n : int)
+            +determineNearestHub()
+            -nearestHub(costumer : NetworkPoint)
+            -determineListHubs() : List<CompanyCostumer>
+            -totalNumberCompany() : int
+            +generateExpeditionListWithoutRestriction(day : int) : List<BasketExpedition>
+            -getListWithMapsFromAIntervalOfDays(maximumDay : int, minimumDay : int) : List<Map<AgriculturalProducer, Basket>>
+            -populateExpeditionList(basketExpeditionsList : List<BasketExpedition>, day : int, minimumDay : int)
+            -findProducerAndProvideAProduct(product : Product, producerBasketMapList : List<Map<AgriculturalProducer, Basket>>, costumerBasket : Basket) : ProductProvided
+            +generateDeliveryRoute(basketExpeditionsList : List<BasketExpedition>) : DeliveryRoute
+            -getProviderList(basketExpeditionsList : List<BasketExpedition>) : List<AgriculturalProducer>
+            -getBasketsDelivered(basketExpeditionsList : List<BasketExpedition>) : Map<CompanyCostumer, Set<BasketExpedition>>
+            -generateRoute(waypoints : List<V>, shortPath : LinkedList<NetworkPoint>, firstFixedPosition : boolean) : <V extends NetworkPoint> int
+            +calculateStatisticsByBasket(basketExpeditionsList : List<BasketExpedition>)
+            -calculateDistinctClientsProvided(getCostumerProducer : Map<AgriculturalProducer, Set<Costumer>>)
+            -calculateCompletelySoldProducts(agriculturalProducers : Set<AgriculturalProducer>, day : int)
+            -calculateProvidedHud(getCostumerProducer : Map<AgriculturalProducer, Set<Costumer>>)
+            +calculateStatisticsByAgriculturalProducer(basketExpeditionsList : List<BasketExpedition>)
+            +calculateStatisticsByCostumer(basketExpeditionsList : List<BasketExpedition>)
+            +calculateStatisticsByHub(basketExpeditionsList : List<BasketExpedition>)
+            +generateExpeditionListWithNClosestHubs(n : int, day : int) : List<BasketExpedition>
+            -populateExpeditionListWithNClosestHubs(basketExpeditionList : List<BasketExpedition>, day : int, n : int, minimumDay : int)
+            -getListWithMapsFromAIntervalOfDays(costumer : Costumer, n : int, maximumDay : int, minimumDay : int) : List<Map<AgriculturalProducer, Basket>>
+            -agriculturalProducersClosestToTheHub(costumer : Costumer, n : int) : List<AgriculturalProducer>
+        }
+
+        abstract Costumer {
+            -costumerIdentifier : String
+            -costumerStatistics : CostumerStatistics
+        }
+
+        class Basket {
+            -productsAndAmount : Map<Product, Double>
+        }
+
+        class BasketExpedition {
+            -costumer : Costumer
+            -day : int
+            -productsProvided : Set<ProductProvided>
+            -statisticsBasket : BasketStatistics
+        }
+
+        class Product {
+            -productIdentifier : String
+        }
+
+        class ProductProvided {
+            -product : Product
+            -requestedQuantity : double
+            -deliveredQuantity : double
+            -provider : AgriculturalProducer
+        }
+
+        class DeliveryRoute {
+            -waypoints : LinkedList<NetworkPoint>
+            -basketsDelivered : Map<CompanyCostumer, Set<BasketExpedition>>
+            -totalDistance : int
+            -minDistDeliveryRoute : MatrixGraph<NetworkPoint, Integer>
+        }
+
+        class AgriculturalProducerStatistics {
+            -basketFullySupplied : int
+            -basketPartiallySupplied : int
+            -distinctClientsProvided : int
+            -completelySoldProducts : int
+            -suppliedHubs : int
+        }
+
+        class BasketStatistics {
+            -fullySatisfiedProducts : int
+            -partiallySatisfiedProducts : int
+            -unsatisfiedProducts : int
+            -totalPercentageBasketSatisfied : double
+            -producersProvidedBasket : int
+        }
+
+        class CostumerStatistics {
+            -fullySatisfiedBaskets : int
+            -partiallySatisfiedBaskets : int
+            -differentSupliersGiveBaskets : int
+        }
+
+        class HubStatistics {
+            -differentCostumersFetchHub : int
+            -differentProducersGiveHub : int
+        }
+    }
+
+    package utils {
+        interface FileReader {
+        }
+
+        interface Graph {
+        }
+
+        class FileReaderType1 {
+        }
+
+        class FileToBasket {
+        }
+
+        class FileToGraph {
+        }
+
+        enum CodeType {
+        }
+
+        enum IndexColumnsFileDistances {
+        }
+
+        enum IndexColumnsFileProducerCustomer {
+        }
+
+        enum IndexColumnsFileBaskets {
+        }
+    }
+
+
+    package dataStructure.graph {
+        package map {
+            class MapGraph {
+            }
+
+           class MapVertex {
+           }
+        }
+
+        package matrix {
+            class MatrixGraph {
+            }
+        }
+
+        class Algorithms {
+        }
+
+        class Edge {
+        }
+
+        abstract class CommonGraph {
+        }
+    }
+
+'Depêndencias
+dataStructure.graph ..> utils
+model ..> dataStructure.graph
+DistributionNetwork ..> NetworkPoint
+Algorithms ..> MatrixGraph
+DeliveryRoute ..> NetworkPoint
+DistributionNetwork ..> Basket
+DistributionNetwork ..> ProductProvided
+Basket ..> Product
+ProductProvided ..> Product
+DistributionNetwork ..> BasketExpedition
+FileToBasket ..> FileReaderType1
+FileToBasket ..> IndexColumnsFileBaskets
+
+'Relações
+NetworkPoint <|-- AgriculturalProducer
+NetworkPoint <|-- Costumer
+NetworkPoint <|-- ParticularCostumer
+
+Costumer <|-- CompanyCostumer
+Costumer <|-- ParticularCostumer
+
+CommonGraph <|-- MapGraph
+CommonGraph <|-- MatrixGraph
+Graph <|-- CommonGraph
+
+FileReader <|-- FileReaderType1
+
+MapGraph *-- MapVertex
+MapGraph *-- Edge
+
+MatrixGraph *-- Edge
+
+CompanyCostumer *-- HubStatistics
+Basket *-- BasketStatistics
+Costumer *-- CostumerStatistics
+AgriculturalProducer *-- AgriculturalProducerStatistics
+
+
+
+@enduml

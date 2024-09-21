@@ -1,0 +1,7 @@
+sensor, maximo, minimo, media
+Temperatura, 67, 6, 29
+Velocidade do vento, 127, 0, 42
+Direcao do vento, 359, 0, 168
+Humidade atmosferica, 125, 0, 40
+Humidade do solo, 161, 0, 40
+Pluviosidade, 240, 0, 78

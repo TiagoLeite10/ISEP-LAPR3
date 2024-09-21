@@ -1,0 +1,373 @@
+@startuml
+!define pk(x) <b><color:#daa520><&key></color> x</b>
+!define fk(x) <color:#aaaaaa><&key></color> x
+!define pk_fk(x) <color:#967444><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (t, white) >>
+title <b>Modelo relacional de dados</b>
+hide methods
+hide circle
+left to right direction
+skinparam title {
+    HorizontalAlignment top
+    FontSize 24
+}
+
+'------Tabelas----------
+
+table(LEGENDA) {
+    pk(PK)
+    fk(FK)
+    pk_fk(PK_FK)
+    column(TEXT)
+}
+
+table(rega) {
+    pk(codRega)
+    fk(codTipoRega)
+    fk(codPlanoRega)
+    fk(codParcela)
+    column(quantidade)
+    column(dataRega)
+}
+
+table(restricao) {
+    pk(codRestricao)
+    fk(codParcela)
+    fk(codFatorProducao)
+    column(dataInicio)
+    column(dataFim)
+}
+
+table(estacaoMeteorologica) {
+    pk(codEstacaoMeteorologica)
+    column(nome)
+}
+
+table(planoRega) {
+    pk(codPlanoRega)
+    fk(codEstacaoMeteorologica)
+    column(periodicidade)
+    column(tempoRega)
+    column(dataInicio)
+    column(dataFim)
+ }
+
+table(operacaoAgricola) {
+    pk(codOperacaoAgricola)
+    fk(codPlantacao)
+    fk(codFatorProducao)
+    fk(codFormaAplicacao)
+    column(quantidade)
+    column(dataOperacaoAgricola)
+    column(cancelada)
+}
+
+table(cultura) {
+    pk(codCultura)
+    fk(codObjetivoCultura)
+    fk(codTipoCultura)
+    column(nome)
+}
+
+table(objetivoCultura) {
+    pk(codObjetivoCultura)
+    column(descricao)
+}
+
+table(tipoCultura) {
+    pk(codTipoCultura)
+    column(descricao)
+}
+
+table(produto) {
+  pk(codProduto)
+  fk(codIva)
+  column(nome)
+  column(valorProduto)
+}
+
+table(formaAplicacao) {
+    pk(codFormaAplicacao)
+    column(descricao)
+}
+
+table(fatorProducaoClassificacao) {
+    pk(codFatorProducaoClassificacao)
+    column(descricao)
+}
+
+table(formulacaoProduto) {
+    pk(codFormulacaoProduto)
+    column(descricao)
+}
+
+table(unidade) {
+    pk(codUnidade)
+    column(descricao)
+}
+
+table(fichaTecnicaTipoComposicao) {
+    pk(codFichaTecnicaTipoComposicao)
+    fk(codUnidade)
+    column(nome)
+}
+
+table(linhaFichaTecnica) {
+    pk_fk(codFatorProducao)
+    pk_fk(codFichaTecnicaTipoComposicao)
+    column(quantidade)
+}
+
+table(fornecedor) {
+    pk(codFornecedor)
+    column(nome)
+}
+
+table(fatorProducao) {
+    pk(codFatorProducao)
+    fk(codFatorProducaoClassificacao)
+    fk(codFormulacaoProduto)
+    fk(codFornecedor)
+    fk(codUnidade)
+    column(nomeComercial)
+}
+
+table(instalacaoAgricola) {
+    pk(codInstalacaoAgricola)
+    column(nome)
+}
+
+table(edificio) {
+    pk(codEdificio)
+    fk(codTipoEdificio)
+    fk(codInstalacaoAgricola)
+    column(nome)
+}
+
+table(parcela) {
+   pk(codParcela)
+   fk(codInstalacaoAgricola)
+   column(designacao)
+   column(area)
+}
+
+table(tipoEdificio) {
+   pk(codTipoEdificio)
+   column(nome)
+}
+
+table(plantacao) {
+   pk(codPlantacao)
+   fk(codParcela)
+   fk(codCultura)
+   column(dataInicio)
+   column(dataFim)
+   column(area)
+}
+
+table(tipoSensor) {
+    pk(codTipoSensor)
+    column(acronimo)
+    column(descricao)
+}
+
+table(sensor) {
+    pk(codSensor)
+    fk(codTipoSensor)
+    column(valorReferencia)
+}
+
+table(leituraSensor) {
+    pk(codLeituraSensor)
+    fk(codEstacaoMeteorologica)
+    fk(codSensor)
+    column(resultado)
+    column(dataLeitura)
+}
+
+table(liquidoRega) {
+    pk(codLiquidoRega)
+    column(descricao)
+}
+
+table(metodoRega) {
+    pk(codMetodoRega)
+    column(descricao)
+}
+
+table(tipoRega) {
+    pk(codTipoRega)
+    fk(codLiquidoRega)
+    fk(codMetodoRega)
+    column(descricao)
+}
+
+table(hub) {
+    pk(codHub)
+    fk(codTipoHub)
+    column(latitude)
+    column(longitude)
+}
+
+table(tipoHub) {
+    pk(codTipoHub)
+    column(acronimo)
+    column(descricao)
+}
+
+table(cliente) {
+    pk(codInternoCliente)
+    fk(codTipoCliente)
+    fk(codHub)
+    column(nome)
+    column(numeroFiscal)
+    column(email)
+    column(plafond)
+    column(numeroEncomendas)
+    column(valorTotalEncomendas)
+}
+
+table(tipoCliente) {
+    pk(codTipoCliente)
+    column(descricao)
+}
+
+table(encomenda) {
+    pk(codEncomenda)
+    fk(codInternoCliente)
+    fk(codEstadoEncomenda)
+    fk(codHub)
+    column(dataEncomenda)
+    column(dataVencimento)
+    column(dataPagamento)
+    column(dataEntrega)
+}
+
+table(estadoEncomenda) {
+    pk(codEstadoEncomenda)
+    column(descricao)
+}
+
+table(registoEncomenda) {
+    pk_fk(codProduto)
+    pk_fk(codEncomenda)
+    column(quantidade)
+    column(valorProduto)
+    column(percentagemIva)
+}
+
+table(iva) {
+    pk(codIva)
+    column(percentagemIva)
+}
+
+table(colheita) {
+    pk(codColheita)
+    fk(codPlantacao)
+    fk(codProduto)
+    column(dataColheita)
+    column(quantidade)
+}
+
+table(processoLeituraSensor) {
+    pk(codProcessoLeituraSensor)
+    column(dataExecuçãoProcesso)
+    column(numTotalRegistosLidos)
+    column(numRegistosTransferidos)
+    column(numRegistosNãoTransferidos)
+}
+
+table(registoProcessoLeituraSensor) {
+    pk(codRegistoProcessoLeituraSensor)
+    fk(codProcessoLeituraSensor)
+    fk(codSensor)
+    column(numErrosIdentificados)
+}
+
+table(moradaFiscal) {
+    pk(codMoradaFiscal)
+    fk(codInternoCliente)
+    column(morada)
+    column(codPostal)
+    column(cidade)
+    column(estado)
+}
+
+table(pistaAuditoriaOperacao) {
+    pk(codPistaAuditoriaOperacao)
+    fk(codOperacaoAgricola)
+    fk(codTipoAlteracao)
+    column(codUtilizador)
+    column(dataAlteracao)
+}
+
+table(tipoAlteracao) {
+    pk(codTipoAlteracao)
+    column(descricao)
+}
+
+'------Relações----------
+
+objetivoCultura ||..|{ cultura
+tipoCultura ||..|{ cultura
+produto ||..|{ colheita
+planoRega ||..|{ rega
+planoRega }|..|| estacaoMeteorologica
+
+rega }|..|| parcela
+
+operacaoAgricola }o..|| fatorProducao
+
+fatorProducaoClassificacao ||..o{ fatorProducao
+formulacaoProduto ||..|{ fatorProducao
+unidade ||..o{ fichaTecnicaTipoComposicao
+fichaTecnicaTipoComposicao ||..o{ linhaFichaTecnica
+linhaFichaTecnica }|..|| fatorProducao
+
+parcela }|..|| instalacaoAgricola
+edificio }|..|| instalacaoAgricola
+plantacao }|..|| parcela
+edificio }o..|| tipoEdificio
+plantacao }|..|| cultura
+operacaoAgricola }o..|| plantacao
+
+tipoSensor ||..|{ sensor
+sensor ||..|{ leituraSensor
+liquidoRega ||..|{ tipoRega
+metodoRega ||..|{ tipoRega
+tipoRega ||..|{ rega
+leituraSensor }|..o| estacaoMeteorologica
+
+hub }o..|| tipoHub
+cliente }|..|| tipoCliente
+cliente ||..o{ encomenda
+estadoEncomenda ||..o{ encomenda
+encomenda ||..|{ registoEncomenda
+registoEncomenda }|..|| produto
+
+hub ||..o{ encomenda
+hub |o..o{ cliente
+
+iva ||..|{ produto
+
+colheita }o..|| plantacao
+
+fatorProducao }o..|| fornecedor
+
+registoProcessoLeituraSensor }|..|| processoLeituraSensor
+registoProcessoLeituraSensor }o..|| sensor
+
+restricao }o..|| parcela
+restricao }o..|| fatorProducao
+
+formaAplicacao ||..o{ operacaoAgricola
+
+moradaFiscal }|..|| cliente
+
+unidade ||..o{ fatorProducao
+
+pistaAuditoriaOperacao }|..|| operacaoAgricola
+
+tipoAlteracao ||..o{ pistaAuditoriaOperacao
+@enduml

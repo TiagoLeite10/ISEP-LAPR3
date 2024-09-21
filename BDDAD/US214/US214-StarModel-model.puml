@@ -1,0 +1,65 @@
+@startuml
+!define pk(x) <b><color:#daa520><&key></color> x</b>
+!define fk(x) <color:#aaaaaa><&key></color> x
+!define pk_fk(x) <color:#967444><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (t, white) >>
+title <b> Model</b>
+hide methods
+hide circle
+skinparam title {
+    HorizontalAlignment top
+    FontSize 24
+}
+
+'------Tabelas----------
+
+table(produto) {
+    codProduto
+    nome
+    tipoCultura
+    cultura
+}
+
+table(cliente) {
+    codCliente
+    numeroFiscal
+}
+
+table(venda) {
+      codCliente
+      codProduto
+      codTempo
+      vendasLiquidas
+      quantidade
+}
+
+table(colheita) {
+     codParcela
+     codProduto
+     codTempo
+     quantidade
+}
+
+table(parcela) {
+     codParcela
+     designacao
+     area
+}
+
+table(tempo) {
+     codTempo
+     ano
+     mes
+}
+
+
+'------Relações----------
+colheita -down- tempo
+venda -down- tempo
+venda -up- produto
+colheita -up- produto
+
+venda -left- cliente
+colheita -right- parcela
+@enduml
